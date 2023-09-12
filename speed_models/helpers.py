@@ -5,8 +5,8 @@ from .speed_estimator import BlockBSpeedEstimator
 def get_ori_speed(num_blocks=4, num_residual_units=12):
     with torch.no_grad():
         speed_estimator = BlockBSpeedEstimator('tensor').cpu()
-        expand = 2
-        linear = 1
+        expand = 6   # 按照情况修改这部分内容
+        linear = 0.84
         channels_number = torch.tensor([num_residual_units, num_residual_units * expand,
                                         int(num_residual_units * linear), num_residual_units], dtype=torch.float).cpu()
         block_speed = speed_estimator.estimateByChannelNum(channels_number)
