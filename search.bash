@@ -27,7 +27,7 @@ now=$(date +'%b%d_%H_%M_%S')
 experiment_name=$1
 
 if [ -z $experiment_name ]; then
-  job_dir=wdsr_b_x${scale}_${num_blocks}_${num_residual_units}_${now}
+  job_dir=repsr_b_x${scale}_${num_blocks}_${num_residual_units}_${now}
 else
   job_dir=${experiment_name}_${now}
 fi
