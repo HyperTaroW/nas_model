@@ -157,11 +157,15 @@ class RepNAS_MODEL(nn.Module):
         all_width = []
         for idx, module in enumerate(self.body.children()):
             width = []
+            # width_2 = []
             if idx in remain_block_idx and isinstance(module, AggregationLayer):
                 width.append(_get_width_from_weight(self.mask.weight))
                 for m in module.body_1.children():
                     if isinstance(m, BinaryConv2d):
-                        width.append(_get_width_from_weight(m.weight))
+                        width.append(_get_width_from_weight(self.mask.weight))
+                # for n in module.body_2.children():
+                #     if isinstance(n, BinaryConv2d):
+                #         width.append(_get_width_from_weight(n.weight))
                 all_width.append(width)
         return all_width
 
