@@ -257,7 +257,7 @@ def main(params, logging):
     # Loss function
     criterions = OrderedDict()
     criterions['l1'] = nn.L1Loss().to(device)
-    if params.model_type == "RepSR_MODEL":
+    if params.model_type == "NAS_MODEL":
         ori_speed = get_ori_speed(num_blocks=params.num_blocks, num_residual_units=params.num_residual_units)
         logging.info(f'Supernet Speed: {ori_speed:.02f} ms', device=device)
         logging.info(f'Target Speed: {params.speed_target:.02f} ms', device=device)
