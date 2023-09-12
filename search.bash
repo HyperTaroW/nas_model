@@ -17,7 +17,7 @@ lr_patch_size=48    # default 48
 # arch
 scale=2
 num_blocks=16
-num_residual_units=24
+num_residual_units=64
 
 num_gpus=$(awk -F '[0-9]' '{print NF-1}' <<<"$CUDA_VISIBLE_DEVICES")
 echo Using $num_gpus GPUs
