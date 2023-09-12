@@ -3,7 +3,7 @@ import os
 import common.modes
 import datasets._isr
 
-LOCAL_DIR = 'data/Set5/'
+LOCAL_DIR = '/data/sr_datasets/data_2/Set5/'
 
 
 def update_argparser(parser):
