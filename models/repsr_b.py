@@ -48,40 +48,18 @@ class RepNAS_MODEL(nn.Module):
         num_outputs = scale * scale * params.num_channels
 
         # 由于在 Block 当中只设定了每个 repsr_block 的部分，网络框架的头部和尾部还需要另外定义
-        head_1, head_2 = [], []
 
-        conv_1 = nn.Conv2d(
+        conv = nn.Conv2d(
             in_channels=num_inputs,
-            out_channels=int(params.num_residual_units * multiplier),
-            kernel_size=kernel_size,
-            padding=kernel_size // 2)
-        head_1.append(conv_1)
-        head_1.append(nn.BatchNorm2d(int(params.num_residual_units * multiplier)))
-
-        conv_2 = nn.Conv2d(
-            in_channels=num_inputs,
-            out_channels=int(params.num_residual_units * multiplier),
-            kernel_size=kernel_size,
-            padding=kernel_size // 2)
-        head_2.append(conv_2)
-        head_2.append(nn.BatchNorm2d(int(params.num_residual_units * multiplier)))
-
-        conv_1 = nn.Conv2d(
-            in_channels=int(params.num_residual_units * multiplier),
             out_channels=params.num_residual_units,
-            kernel_size=1,
-            padding=1 // 2)
-        head_1.append(conv_1)
+            kernel_size=kernel_size,
+            padding=kernel_size//2
+        )
 
-        conv_2 = weight_norm(nn.Conv2d(
-            in_channels=int(params.num_residual_units * multiplier),
-            out_channels=params.num_residual_units,
-            kernel_size=1,
-            padding=1 // 2))
-        head_2.append(conv_2)
-
-        self.head_1 = nn.Sequential(*head_1)
-        self.head_2 = nn.Sequential(*head_2)
+        init.kaiming_normal_(conv.weight, mode='fan_in')
+        if conv.bias is not None:
+            init.constant_(conv.bias, 0)
+        self.head = conv
 
         self.speed_estimator = BlockBSpeedEstimator('mask' if params.width_search else 'channel').eval()
 
@@ -99,39 +77,13 @@ class RepNAS_MODEL(nn.Module):
                                      out_channels=params.num_residual_units,
                                      groups=params.num_residual_units)
 
-        tail_1, tail_2 = [], []
-        conv_1 = nn.Conv2d(
+        conv = nn.Conv2d(
             in_channels=params.num_residual_units,
-            out_channels=int(params.num_residual_units * multiplier),
-            kernel_size=kernel_size,
-            padding=kernel_size // 2)
-
-        tail_1.append(conv_1)
-        tail_1.append(nn.BatchNorm2d(int(params.num_residual_units * multiplier)))
-
-        conv_1 = nn.Conv2d(
-            in_channels=int(params.num_residual_units * multiplier),
             out_channels=num_outputs,
-            kernel_size=1,
-            padding=1 // 2)
-        tail_1.append(conv_1)
-        self.tail_1 = nn.Sequential(*tail_1)
-
-        conv_2 = nn.Conv2d(
-            in_channels=params.num_residual_units,
-            out_channels=int(params.num_residual_units * multiplier),
             kernel_size=kernel_size,
-            padding=kernel_size // 2)
-        tail_2.append(conv_2)
-        tail_2.append(nn.BatchNorm2d(int(params.num_residual_units * multiplier)))
-
-        conv_2 = nn.Conv2d(
-            in_channels=int(params.num_residual_units * multiplier),
-            out_channels=num_outputs,
-            kernel_size=1,
-            padding=1 // 2)
-        tail_2.append(conv_2)
-        self.tail_2 = nn.Sequential(*tail_2)
+            padding=kernel_size // 2
+        )
+        self.tail = conv
 
         shuf = []
         if scale > 1:
@@ -141,12 +93,12 @@ class RepNAS_MODEL(nn.Module):
         if params.pretrained:
             self.load_pretrained()
 
-        self.init_weights()
+        # self.init_weights()
 
 
     def forward(self, x):
         x = x - self.image_mean
-        out = self.head_1(x) + self.head_2(x)
+        out = self.head(x)
         speed_acuu = x.new_zeros(1)
         for module in self.body:
             if self.width_search:
@@ -158,7 +110,7 @@ class RepNAS_MODEL(nn.Module):
 
         if self.width_search:
             out = self.mask(out)
-        out = self.tail_1(out) + self.tail_2(out)
+        out = self.tail(out)
         out = self.shuf(out)
         out = self.image_mean + out
         return out, speed_acuu
