@@ -5,7 +5,7 @@ export CUDA_VISIBLE_DEVICES=0,1,2
 
 model_type='RepNAS_MODEL'  # NAS_MODEL / BASIC_MODEL / RepSR_MODEL / RepNAS_MODEL
 
-speed_target=100    # target latency in ms
+speed_target=100    # target latency in ms,一会儿将目标进行修改
 
 width_epochs=10     # width only search epoch
 epochs=20           # width+depth search epoch
@@ -50,7 +50,7 @@ python -m torch.distributed.run --nproc_per_node $num_gpus --master_port $(((RAN
   --model_type $model_type \
   --speed_target $speed_target \
   --dataset div2k \
-  --eval_datasets set5 set14 urban100 bsds100 \
+  --eval_datasets set5 \
   --num_blocks $num_blocks \
   --num_residual_units $num_residual_units \
   --scale $scale \
