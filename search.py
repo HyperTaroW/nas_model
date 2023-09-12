@@ -60,7 +60,7 @@ def train(model,
         # Get status
         module = model.module if hasattr(model, 'module') else model
 
-        if params.model_type == 'NAS_MODEL':
+        if params.model_type == 'RepNAS_MODEL':
             ignore_speed = False
         else:
             ignore_speed = True
@@ -257,7 +257,7 @@ def main(params, logging):
     # Loss function
     criterions = OrderedDict()
     criterions['l1'] = nn.L1Loss().to(device)
-    if params.model_type == "RepSR_MODEL":
+    if params.model_type == "RepNAS_MODEL":
         ori_speed = get_ori_speed(num_blocks=params.num_blocks, num_residual_units=params.num_residual_units)
         logging.info(f'Supernet Speed: {ori_speed:.02f} ms', device=device)
         logging.info(f'Target Speed: {params.speed_target:.02f} ms', device=device)
@@ -382,7 +382,7 @@ def main(params, logging):
                                                epochs=params.finetune_epochs)
 
     end_epoch += params.finetune_epochs
-    params.model_type = 'BASIC_MODEL'
+    params.model_type = 'RepSR_MODEL'
     for epoch in range(epoch + 1, end_epoch + 1):
         if train_sampler is not None:
             train_sampler.set_epoch(epoch)
@@ -410,8 +410,8 @@ def main(params, logging):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_type', default='RepSR_MODEL', type=str, required=True,
-                        help='model type: NAS_MODEL / BASIC_MODEL / RepSR_MODEL')
+    parser.add_argument('--model_type', default='RepNAS_MODEL', type=str, required=True,
+                        help='model type: NAS_MODEL / BASIC_MODEL / RepSR_MODEL / RepNAS_MODEL')
     parser.add_argument('--dataset', default=None, type=str, required=True,
                         help='Dataset name.')
     parser.add_argument('--job_dir', default=None, type=str, required=True,
