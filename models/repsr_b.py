@@ -172,6 +172,12 @@ class RepNAS_MODEL(nn.Module):
                 return module.alpha1.grad, module.alpha2.grad
 
     @torch.no_grad()
+    def get_alpha(self):
+        for module in self.body.children():
+            if isinstance(module, AggregationLayer):
+                return module.alpha1, module.alpha2
+
+    @torch.no_grad()
     def length_grad(self, flag=False):
         for module in self.body.children():
             if isinstance(module, AggregationLayer):
