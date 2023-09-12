@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 import argparse
 from .wdsr_b import NAS_MODEL, ModelOutput
+from .repsr_b import RepNAS_MODEL, ModelOutput
 from .basic_wdsr_b import BASIC_MODEL
 from .basic_repsr_b import RepSR_MODEL
 
