@@ -143,7 +143,7 @@ class RepNAS_MODEL(nn.Module):
         remain_block_idx = []
         for idx, module in enumerate(self.body.children()):
             if isinstance(module, AggregationLayer):
-                alpha1, alpha2 = F.softmax(torch.stack([module.alpha1, module.alpha2]))
+                alpha1, alpha2 = F.softmax(torch.stack([module.alpha1, module.alpha2], dim=0), dim=0)
                 if alpha1 < alpha2:
                     remain_block_idx.append(idx)
         return  remain_block_idx
@@ -162,7 +162,7 @@ class RepNAS_MODEL(nn.Module):
                 width.append(_get_width_from_weight(self.mask.weight))
                 for m in module.body_1.children():
                     if isinstance(m, BinaryConv2d):
-                        width.append(_get_width_from_weight(self.mask.weight))
+                        width.append(_get_width_from_weight(m.weight))
                 # for n in module.body_2.children():
                 #     if isinstance(n, BinaryConv2d):
                 #         width.append(_get_width_from_weight(n.weight))
@@ -215,7 +215,8 @@ class RepNAS_MODEL(nn.Module):
         import os
         path, filename = os.path.split(__file__)
         weight_path = f'{path}/pretrained_weights'
-        state_dict = torch.load(f'{weight_path}/repsr_b_x{self.scale}_{self.num_blocks}_{self.num_residual_units}.pt')
+        state_dict = torch.load(f'{weight_path}/repsr_b_x{self.scale}_{self.num_blocks}_{self.num_residual_units}.pt',
+                                map_location='cpu')
         state_dict_iterator = iter(state_dict.items())
         load_name, load_param = next(state_dict_iterator)
         for p in self.parameters():
