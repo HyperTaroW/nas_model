@@ -3,7 +3,7 @@ export CUDA_VISIBLE_DEVICES=0,1,2
 
 # Experiments
 
-model_type='RepSR_MODEL'  # NAS_MODEL / BASIC_MODEL / RepSR_MODEL
+model_type='RepNAS_MODEL'  # NAS_MODEL / BASIC_MODEL / RepSR_MODEL / RepNAS_MODEL
 
 speed_target=100    # target latency in ms
 
