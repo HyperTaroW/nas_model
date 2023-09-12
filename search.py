@@ -410,7 +410,7 @@ def main(params, logging):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_type', default='NAS_MODEL', type=str, required=True,
+    parser.add_argument('--model_type', default='BASIC_MODEL', type=str, required=True,
                         help='model type: NAS_MODEL / BASIC_MODEL / RepNAS_MODEL')
     parser.add_argument('--dataset', default=None, type=str, required=True,
                         help='Dataset name.')
