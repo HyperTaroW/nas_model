@@ -40,7 +40,7 @@ class BlockBSpeedEstimator(nn.Module):
     def estimateByMask(self, module: nn.Module, block_mask: nn.Module):
         # channels = self.get_unmask_number(module.block_mask)
         channels = self.get_unmask_number(block_mask)
-        for m in module.body.children():
+        for m in module.body_1.children():
             if isinstance(m, BinaryConv2d):
                 channels = torch.cat([channels, self.get_unmask_number(m)])
         channels = torch.cat([channels, channels[0].unsqueeze(0)])
