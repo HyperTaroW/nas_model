@@ -4,7 +4,7 @@ from __future__ import print_function
 import argparse
 from .wdsr_b import NAS_MODEL, ModelOutput
 from .basic_wdsr_b import BASIC_MODEL
-
+from .basic_repsr_b import RepSR_MODEL
 
 def update_argparser(parser: argparse.ArgumentParser):
     parser.add_argument('--learning_rate', help='Learning rate.', default=0.001, type=float, )
