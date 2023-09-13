@@ -3,9 +3,9 @@ export CUDA_VISIBLE_DEVICES=0,1,2
 
 # Experiments
 
-model_type='RepNAS_MODEL'  # NAS_MODEL / BASIC_MODEL / RepSR_MODEL / RepNAS_MODEL
+model_type='RepNAS_MODEL'  # NAS_MODEL / BASIC_MODEL / RepSR_MDOEL /RepNAS_MODEL
 
-speed_target=100    # target latency in ms,一会儿将目标进行修改
+speed_target=100    # target latency in ms
 
 width_epochs=10     # width only search epoch
 epochs=20           # width+depth search epoch
@@ -64,5 +64,3 @@ python -m torch.distributed.run --nproc_per_node $num_gpus --master_port $(((RAN
   --pretrained \
   --distributed \
   --job_dir runs/$job_dir
-
-
